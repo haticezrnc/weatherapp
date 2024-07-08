@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Weather App - Easy Tutorials</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h1 class="welcome-message">Hoşgeldiniz, Hatice'nin Hava Durumu Sayfasına</h1>
+
+<div class="card" style="display: none;">
+    <div class="search">
+        <input type="text" placeholder="Şehir ismi gir" spellcheck="false" id="cityInput">
+        <button onclick="checkWeather()">Bul</button>
+    </div>
+    <div class="weather">
+        <img src="images/rain.png" class="weather-icon">
+        <h1 class="temp">22 &#176;C</h1>
+        <h2 class="city">New York</h2>
+        <div class="details">
+            <div class="col">
+                <img src="images/humidity.png">
+                <div>
+                    <p class="humidity">50%</p>
+                    <p>Humidity</p>
+                </div>
+            </div>
+            <div class="col">
+                <img src="images/wind.png">
+                <div>
+                    <p class="wind">15 km/h</p>
+                    <p>Wind Speed</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const apiKey = "d6b41f6affe26a316eb843294049822c";
+    const apiUrl = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
+
+    function showSearch() {
+        document.querySelector('.card').style.display = 'block';
+    }
+
+    async function checkWeather() {
+        const city = document.getElementById('cityInput').value || 'New York';
+        const response = await fetch(`${apiUrl}${city}&appid=${apiKey}`);
+        const data = await response.json();
+
+        console.log(data);
+
+        updateWeatherInfo(data);
+        updateWeatherIcons(data);
+    }
+
+    function updateWeatherInfo(data) {
+        document.querySelector(".city").innerHTML = data.name;
+        document.querySelector(".temp").innerHTML = `${Math.round(data.main.temp)} &#176;C`;
+        document.querySelector(".humidity").innerHTML = `${data.main.humidity}%`;
+        document.querySelector(".wind").innerHTML = `${data.wind.speed} km/h`;
+    }
+
+    function updateWeatherIcons(data) {
+        const weatherIcon = document.querySelector(".weather-icon");
+        switch (data.weather[0].main.toLowerCase()) {
+            case 'snow':
+                weatherIcon.src = "images/snow.png";
+                break;
+            case 'mist':
+                weatherIcon.src = "images/mist.png";
+                break;
+            case 'rain':
+                weatherIcon.src = "images/rain.png";
+                break;
+            case 'drizzle':
+                weatherIcon.src = "images/drizzle.png";
+                break;
+            case 'clouds':
+                weatherIcon.src = "images/clouds.png";
+                break;
+            case 'clear':
+                weatherIcon.src = "images/clear.png";
+                break;
+            default:
+                weatherIcon.src = "images/wind.png";
+                break;
+        }
+    }
+
+    // Sayfa yüklendiğinde sadece arama kısmını göster
+    window.onload = showSearch;
+</script>
+
+</body>
+</html>
